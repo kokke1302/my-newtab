@@ -18,7 +18,11 @@
 
       <!-- 検索バー -->
       <section id="search-wrap">
-        <form id="search-form" action="" method="GET">
+        <form
+          id="search-form"
+          action="https://www.google.com/search"
+          method="GET"
+        >
           <div id="search-container">
             <svg
               id="search-icon"
@@ -34,13 +38,17 @@
             </svg>
             <input
               id="search"
-              name=""
+              name="q"
               type="search"
-              placeholder=""
+              placeholder="Google で検索..."
               autocomplete="off"
-              autofocus
             />
-            <button id="search-clear" aria-label="検索をクリア" hidden>
+            <button
+              id="search-clear"
+              type="button"
+              aria-label="検索をクリア"
+              hidden
+            >
               ✕
             </button>
           </div>
@@ -48,7 +56,7 @@
       </section>
 
       <nav id="shortcuts" aria-label="クイックリンク">
-        <!-- JavaScript でタイルを注入 -->
+        <!-- JSでタイルを注入 -->
         <button id="add-btn" aria-label="ショートカットを追加">
           <svg
             width="24"
@@ -69,46 +77,61 @@
 
     <!-- モーダル・ダイアログ -->
     <dialog id="modal-overlay">
-      <form method="dialog" id="modal">
+      <div id="modal">
         <h2 id="modal-title">ショートカットを追加</h2>
 
         <div class="field">
           <label for="modal-url">URL</label>
-          <input
-            id="modal-url"
-            type="text"
-            placeholder="https://example.com"
-            required
-          />
+          <input id="modal-url" type="text" placeholder="https://example.com" />
         </div>
 
         <div class="field">
           <label for="modal-name">サイト名</label>
-          <input id="modal-name" type="text" placeholder="Example" required />
+          <input id="modal-name" type="text" placeholder="Example" />
         </div>
 
         <div class="field">
           <label>ファビコン</label>
-          <div id="favicon-preview-container">
-            <div id="favicon-preview-content"></div>
+          <div id="favicon-row">
+            <div id="favicon-preview-container">
+              <div id="favicon-preview-content"></div>
+            </div>
+            <div id="favicon-upload-wrap">
+              <label id="favicon-upload-label" for="favicon-file-input">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                >
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="17 8 12 3 7 8" />
+                  <line x1="12" y1="3" x2="12" y2="15" />
+                </svg>
+                画像をアップロード
+              </label>
+              <p id="favicon-hint">URLを入力すると自動取得されます</p>
+            </div>
           </div>
+          <input
+            id="favicon-file-input"
+            type="file"
+            accept="image/*"
+            style="display: none"
+          />
         </div>
 
         <div id="modal-actions">
-          <button
-            id="modal-cancel"
-            class="btn btn-ghost"
-            type="submit"
-            value="cancel"
-            formnovalidate
-          >
+          <!-- type="button" → submit イベントを発生させない -->
+          <button id="modal-cancel" class="btn btn-ghost" type="button">
             キャンセル
           </button>
-          <button id="modal-save" class="btn btn-primary" type="submit">
+          <button id="modal-save" class="btn btn-primary" type="button">
             追加
           </button>
         </div>
-      </form>
+      </div>
     </dialog>
 
     <script src="script.js"></script>

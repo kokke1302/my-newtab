@@ -185,7 +185,7 @@ body::after {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  cursor: pointer;
+  cursor: grab;
   text-decoration: none;
   color: var(--text);
   backdrop-filter: blur(10px);
@@ -194,7 +194,8 @@ body::after {
     background 0.18s,
     border-color 0.18s,
     transform 0.18s,
-    box-shadow 0.18s;
+    box-shadow 0.18s,
+    opacity 0.18s;
   min-height: 100px;
   user-select: none;
 }
@@ -204,6 +205,19 @@ body::after {
   border-color: rgba(255, 255, 255, 0.18);
   transform: translateY(-3px);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+.tile.dragging {
+  opacity: 0.35;
+  cursor: grabbing;
+  transform: scale(0.96);
+}
+
+.tile.drag-over {
+  border-color: var(--accent);
+  background: rgba(91, 141, 238, 0.1);
+  box-shadow: 0 0 0 2px var(--accent-glow);
+  transform: scale(1.04);
 }
 
 .tile img {
@@ -340,7 +354,7 @@ dialog#modal-overlay::backdrop {
   width: calc(100vw - 48px);
   max-width: 400px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
-  display: block; /* Flexを解除して標準的な配置に */
+  display: block;
 }
 
 dialog#modal-overlay[open] {
@@ -365,6 +379,7 @@ dialog#modal-overlay[open] {
   color: var(--text);
 }
 
+/* フィールド */
 .field {
   margin-bottom: 16px;
 }
@@ -379,7 +394,8 @@ dialog#modal-overlay[open] {
   text-transform: uppercase;
 }
 
-.field input {
+.field input[type="text"],
+.field input[type="url"] {
   width: 100%;
   padding: 12px 14px;
   background: var(--surface);
@@ -394,14 +410,23 @@ dialog#modal-overlay[open] {
     box-shadow 0.18s;
 }
 
-.field input:focus {
+.field input[type="text"]:focus,
+.field input[type="url"]:focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
+/* ファビコン */
+#favicon-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 #favicon-preview-container {
-  width: 100%;
-  height: 60px;
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
   background: var(--surface);
   border-radius: 10px;
   display: flex;
@@ -416,6 +441,54 @@ dialog#modal-overlay[open] {
   border-radius: 6px;
 }
 
+#favicon-upload-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+#favicon-upload-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  text-transform: none;
+  letter-spacing: 0;
+  width: fit-content;
+  transition:
+    border-color 0.15s,
+    color 0.15s,
+    background 0.15s;
+}
+
+#favicon-upload-label:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(91, 141, 238, 0.06);
+}
+
+#favicon-upload-label svg {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+}
+
+#favicon-hint {
+  font-size: 11px;
+  color: var(--muted);
+  opacity: 0.65;
+  line-height: 1.5;
+}
+
+/* モーダル下部ボタン */
 #modal-actions {
   display: flex;
   gap: 10px;
