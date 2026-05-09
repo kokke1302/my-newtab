@@ -6,7 +6,9 @@
   padding: 0;
 }
 
-:root {
+/* ── Dark theme (default) ── */
+:root,
+[data-theme="dark"] {
   --bg: #0f1117;
   --surface: rgba(255, 255, 255, 0.05);
   --surface-h: rgba(255, 255, 255, 0.1);
@@ -17,6 +19,26 @@
   --accent-glow: rgba(91, 141, 238, 0.35);
   --danger: #e05c6b;
   --radius: 14px;
+  --modal-bg: #1a1d27;
+  --modal-shadow: rgba(0, 0, 0, 0.6);
+  --settings-btn-bg: rgba(255, 255, 255, 0.05);
+}
+
+/* ── Light theme ── */
+[data-theme="light"] {
+  --bg: #f0f2f8;
+  --surface: rgba(0, 0, 0, 0.04);
+  --surface-h: rgba(0, 0, 0, 0.08);
+  --border: rgba(0, 0, 0, 0.1);
+  --text: #1a1d27;
+  --muted: rgba(26, 29, 39, 0.5);
+  --accent: #3b6fd4;
+  --accent-glow: rgba(59, 111, 212, 0.25);
+  --danger: #d0455a;
+  --radius: 14px;
+  --modal-bg: #ffffff;
+  --modal-shadow: rgba(0, 0, 0, 0.18);
+  --settings-btn-bg: rgba(255, 255, 255, 0.7);
 }
 
 html,
@@ -27,10 +49,13 @@ body {
   font-family: "DM Sans", sans-serif;
   font-weight: 400;
   overflow-x: hidden;
+  transition:
+    background 0.3s ease,
+    color 0.3s ease;
 }
 
-/* ── Background ── */
-body::before {
+/* ── Background default (dark) ── */
+[data-theme="dark"] body::before {
   content: "";
   position: fixed;
   inset: 0;
@@ -47,12 +72,44 @@ body::before {
     ),
     linear-gradient(135deg, #0a0c12 0%, #161922 100%);
   z-index: 0;
+  transition: opacity 0.3s ease;
 }
-body::after {
+
+[data-theme="dark"] body::after {
   content: "";
   position: fixed;
   inset: 0;
   background: url("data:image/svg+xml,%3Csvg viewBox='0 0 1000 1000' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,1000 C300,800 400,200 1000,0 L1000,1000 Z' fill='rgba(255,255,255,0.02)'/%3E%3C/svg%3E");
+  background-size: cover;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Background default (light) ── */
+[data-theme="light"] body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(
+      circle at 20% 30%,
+      rgba(59, 111, 212, 0.08) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 80% 70%,
+      rgba(130, 80, 200, 0.06) 0%,
+      transparent 50%
+    ),
+    linear-gradient(135deg, #e8ecf5 0%, #f5f6fa 100%);
+  z-index: 0;
+}
+
+[data-theme="light"] body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 1000 1000' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,1000 C300,800 400,200 1000,0 L1000,1000 Z' fill='rgba(0,0,0,0.015)'/%3E%3C/svg%3E");
   background-size: cover;
   pointer-events: none;
   z-index: 0;
@@ -131,10 +188,10 @@ body::after {
 
 #search:focus {
   border-color: var(--accent);
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--surface-h);
   box-shadow:
     0 0 0 3px var(--accent-glow),
-    0 4px 20px rgba(0, 0, 0, 0.3);
+    0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
 #search-clear {
@@ -158,7 +215,6 @@ body::after {
   background: var(--surface-h);
 }
 
-/* ブラウザ標準の ✕ を非表示 */
 #search::-webkit-search-cancel-button {
   -webkit-appearance: none;
   appearance: none;
@@ -202,9 +258,9 @@ body::after {
 
 .tile:hover {
   background: var(--surface-h);
-  border-color: rgba(255, 255, 255, 0.18);
+  border-color: rgba(128, 128, 128, 0.25);
   transform: translateY(-3px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
 .tile.dragging {
@@ -215,7 +271,7 @@ body::after {
 
 .tile.drag-over {
   border-color: var(--accent);
-  background: rgba(91, 141, 238, 0.1);
+  background: rgba(91, 141, 238, 0.08);
   box-shadow: 0 0 0 2px var(--accent-glow);
   transform: scale(1.04);
 }
@@ -301,7 +357,7 @@ body::after {
   gap: 10px;
   padding: 20px 10px 16px;
   background: transparent;
-  border: 1.5px dashed rgba(255, 255, 255, 0.15);
+  border: 1.5px dashed var(--border);
   border-radius: var(--radius);
   cursor: pointer;
   color: var(--muted);
@@ -331,8 +387,41 @@ body::after {
   opacity: 1;
 }
 
+/* ── Settings Button ── */
+#settings-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 44px;
+  height: 44px;
+  background: var(--settings-btn-bg);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  color: var(--muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10px);
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+#settings-btn:hover {
+  background: var(--surface-h);
+  color: var(--text);
+  transform: rotate(30deg);
+  border-color: var(--accent);
+}
+
+#settings-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
 /* ── Modal ── */
-dialog#modal-overlay {
+dialog#shortcut-modal,
+dialog#settings-modal {
   border: none;
   background: transparent;
   padding: 0;
@@ -340,24 +429,26 @@ dialog#modal-overlay {
   overflow: visible;
 }
 
-dialog#modal-overlay::backdrop {
-  background: rgba(0, 0, 0, 0.6);
+dialog#shortcut-modal::backdrop,
+dialog#settings-modal::backdrop {
+  background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
 }
 
 #modal {
-  background: #1a1d27;
+  background: var(--modal-bg);
   border: 1px solid var(--border);
   border-radius: 20px;
   padding: 32px;
   width: calc(100vw - 48px);
-  max-width: 400px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  max-width: 420px;
+  box-shadow: 0 20px 60px var(--modal-shadow);
   display: block;
 }
 
-dialog#modal-overlay[open] {
+dialog#shortcut-modal[open],
+dialog#settings-modal[open] {
   animation: modal-in 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
@@ -416,8 +507,93 @@ dialog#modal-overlay[open] {
   box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
+/* ── Theme Switcher ── */
+#theme-switcher {
+  display: flex;
+  gap: 8px;
+}
+
+.theme-option {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 8px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  color: var(--muted);
+  font-family: "DM Sans", sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    border-color 0.18s,
+    color 0.18s,
+    background 0.18s,
+    box-shadow 0.18s;
+}
+
+.theme-option svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.theme-option:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(91, 141, 238, 0.06);
+}
+
+.theme-option.active {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(91, 141, 238, 0.1);
+  box-shadow: 0 0 0 2px var(--accent-glow);
+}
+
+/* ── Background upload row ── */
+#bg-upload-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+#bg-upload-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    color 0.15s,
+    background 0.15s;
+}
+
+#bg-upload-label:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(91, 141, 238, 0.06);
+}
+
+#bg-upload-label svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
 /* ファビコン */
-#favicon-row {
+#favicon-upload-row {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -435,7 +611,7 @@ dialog#modal-overlay[open] {
   border: 1px solid var(--border);
 }
 
-#favicon-preview-content img {
+#favicon-preview img {
   width: 32px;
   height: 32px;
   border-radius: 6px;
@@ -527,7 +703,7 @@ dialog#modal-overlay[open] {
   color: #fff;
 }
 .btn-primary:hover {
-  background: #7aa4f0;
+  filter: brightness(1.1);
 }
 
 /* ── Scrollbar ── */
@@ -538,6 +714,6 @@ dialog#modal-overlay[open] {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.12);
+  background: var(--border);
   border-radius: 3px;
 }

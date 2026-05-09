@@ -1,10 +1,17 @@
 /* ─── Constants ─── */
 const STORAGE_KEY = "newtab_shortcuts_v1";
+const CUSTOM_CSS_KEY = "user-custom-bg";
+const COLOR_MODE_KEY = "newtab_color_mode";
 const FAVICON_API = "https://www.google.com/s2/favicons?domain=";
 const SEARCH_ENGINE = {
   action: "https://www.google.com/search", // 検索エンジンのURL
   param: "q", // クエリパラメータ名
   placeholder: "Google で検索...", // 検索バーのプレースホルダー
+};
+
+/* ─── Drag & Drop State ─── */
+const dragState = {
+  dragging: null,
 };
 
 /* ─── Data Management (LocalStorage) ─── */
@@ -38,15 +45,9 @@ const Utils = {
   },
 };
 
-/* ─── Drag & Drop State ─── */
-const DD = {
-  dragging: null,
-};
-
-/* ─── UI Components ─── */
-const UI = {
-  createTile(sc, index, onDelete, onReorder) {
-    // タイル大枠
+/* ─── Tile ─── */
+const Tile = {
+  create(sc, index, onDelete, onReorder) {
     const tile = document.createElement("a");
     tile.className = "tile";
     tile.href = sc.url;
@@ -84,7 +85,7 @@ const UI = {
 
     // ── Drag & Drop events ──
     tile.addEventListener("dragstart", (e) => {
-      DD.dragging = index;
+      dragState.dragging = index;
       tile.classList.add("dragging");
       e.dataTransfer.effectAllowed = "move";
     });
@@ -94,12 +95,12 @@ const UI = {
       document
         .querySelectorAll(".tile.drag-over")
         .forEach((el) => el.classList.remove("drag-over"));
-      DD.dragging = null;
+      dragState.dragging = null;
     });
 
     tile.addEventListener("dragover", (e) => {
       e.preventDefault();
-      if (DD.dragging === null || DD.dragging === index) return;
+      if (dragState.dragging === null || dragState.dragging === index) return;
       document
         .querySelectorAll(".tile.drag-over")
         .forEach((el) => el.classList.remove("drag-over"));
@@ -108,9 +109,9 @@ const UI = {
 
     tile.addEventListener("drop", (e) => {
       e.preventDefault();
-      if (DD.dragging === null || DD.dragging === index) return;
+      if (dragState.dragging === null || dragState.dragging === index) return;
       const list = Storage.load();
-      const [moved] = list.splice(DD.dragging, 1);
+      const [moved] = list.splice(dragState.dragging, 1);
       list.splice(index, 0, moved);
       Storage.save(list);
       onReorder();
@@ -127,13 +128,13 @@ const UI = {
   },
 };
 
-/* ─── Modal Controller ─── */
-const Modal = {
+/* ─── Shortcut Modal Controller ─── */
+const ShortcutModal = {
   init() {
-    this.dialog = document.getElementById("modal-overlay");
+    this.dialog = document.getElementById("shortcut-modal");
     this.urlInput = document.getElementById("modal-url");
     this.nameInput = document.getElementById("modal-name");
-    this.previewContent = document.getElementById("favicon-preview-content");
+    this.faviconPreview = document.getElementById("favicon-preview");
     this.faviconFile = document.getElementById("favicon-file-input");
     this.uploadedFavicon = null;
 
@@ -142,11 +143,11 @@ const Modal = {
       if (this.uploadedFavicon) return;
       const raw = this.urlInput.value.trim();
       if (!raw) {
-        this.previewContent.innerHTML = "";
+        this.faviconPreview.innerHTML = "";
         return;
       }
       const favUrl = Utils.getFavicon(Utils.formatUrl(raw));
-      this.previewContent.innerHTML = favUrl
+      this.faviconPreview.innerHTML = favUrl
         ? `<img src="${favUrl}" alt="">`
         : "";
     });
@@ -158,7 +159,7 @@ const Modal = {
       const reader = new FileReader();
       reader.onload = (ev) => {
         this.uploadedFavicon = ev.target.result;
-        this.previewContent.innerHTML = `<img src="${this.uploadedFavicon}" alt="">`;
+        this.faviconPreview.innerHTML = `<img src="${this.uploadedFavicon}" alt="">`;
       };
       reader.readAsDataURL(file);
     });
@@ -185,12 +186,12 @@ const Modal = {
       });
     });
 
-    // 背景クリックで閉じる
+    // ダイアログ外をクリックして閉じる
     this.dialog.addEventListener("click", (e) => {
       if (e.target === this.dialog) this.close();
     });
 
-    // close イベントでリセット
+    // ダイアログが閉じられたときのリセット
     this.dialog.addEventListener("close", () => this._reset());
   },
 
@@ -223,9 +224,108 @@ const Modal = {
   _reset() {
     this.urlInput.value = "";
     this.nameInput.value = "";
-    this.previewContent.innerHTML = "";
+    this.faviconPreview.innerHTML = "";
     this.uploadedFavicon = null;
     if (this.faviconFile) this.faviconFile.value = "";
+  },
+};
+
+/* ─── Settings Controller (テーマ + 背景) ─── */
+const SettingsController = {
+  init() {
+    this.bgStyleTag = document.getElementById("user-custom-bg");
+    this.bgFileInput = document.getElementById("bg-file-input");
+    this.modal = document.getElementById("settings-modal");
+    this.bgResetBtn = document.getElementById("bg-reset");
+    this.themeButtons = document.querySelectorAll(".theme-option");
+    this.settingsBtn = document.getElementById("settings-btn");
+    this.modalCloseBtn = document.getElementById("settings-modal-close");
+
+    // 保存済み背景CSSを適用
+    this._applyBg(localStorage.getItem(CUSTOM_CSS_KEY));
+
+    // 保存済みカラーモードを適用
+    this._applyColorMode(localStorage.getItem(COLOR_MODE_KEY) || "dark");
+
+    // 背景ファイルアップロード
+    this.bgFileInput.addEventListener("change", (e) => this._handleBgUpload(e));
+
+    // 背景リセット
+    this.bgResetBtn.addEventListener("click", () => {
+      if (confirm("背景をデフォルトに戻しますか？")) this._resetBg();
+    });
+
+    // カラーモード切り替えボタン
+    this.themeButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const mode = btn.dataset.themeValue;
+        localStorage.setItem(COLOR_MODE_KEY, mode);
+        this._applyColorMode(mode);
+        this._updateThemeButtons(mode);
+      });
+    });
+
+    // モーダル開閉
+    this.settingsBtn.addEventListener("click", () => this.modal.showModal());
+    this.modalCloseBtn.addEventListener("click", () => this.modal.close());
+    this.modal.addEventListener("click", (e) => {
+      if (e.target === this.modal) this.modal.close();
+    });
+
+    // システム設定の変化を監視
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", () => {
+        const saved = localStorage.getItem(COLOR_MODE_KEY) || "dark";
+        if (saved === "system") this._applyColorMode("system");
+      });
+  },
+
+  _handleBgUpload(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const svgDataUrl = `url("data:image/svg+xml,${encodeURIComponent(ev.target.result)}")`;
+      const cssRule = `body::before, body::after { display: none !important; } body { background-image: ${svgDataUrl} !important; background-size: cover; background-position: center; }`;
+      this._saveBg(cssRule);
+    };
+    reader.readAsText(file);
+  },
+
+  _saveBg(css) {
+    localStorage.setItem(CUSTOM_CSS_KEY, css);
+    this._applyBg(css);
+  },
+
+  _applyBg(css) {
+    if (this.bgStyleTag) this.bgStyleTag.textContent = css || "";
+  },
+
+  _resetBg() {
+    localStorage.removeItem(CUSTOM_CSS_KEY);
+    this._applyBg("");
+    this.modal.close();
+  },
+
+  _applyColorMode(mode) {
+    const html = document.documentElement;
+    if (mode === "system") {
+      const prefersDark = window.matchMedia(
+        "(prefers-color-scheme: dark)",
+      ).matches;
+      html.dataset.theme = prefersDark ? "dark" : "light";
+    } else {
+      html.dataset.theme = mode;
+    }
+    this._updateThemeButtons(mode);
+  },
+
+  _updateThemeButtons(activeMode) {
+    document.querySelectorAll(".theme-option").forEach((btn) => {
+      btn.classList.toggle("active", btn.dataset.themeValue === activeMode);
+    });
   },
 };
 
@@ -234,7 +334,8 @@ const App = {
   init() {
     this.cacheDOM();
     this.bindEvents();
-    Modal.init();
+    ShortcutModal.init();
+    SettingsController.init();
     this.render();
     this.startClock();
     this.search.focus();
@@ -275,7 +376,8 @@ const App = {
       this.search.focus();
     });
 
-    this.addBtn.addEventListener("click", () => Modal.open());
+    // 追加ボタン: クリック時
+    this.addBtn.addEventListener("click", () => ShortcutModal.open());
   },
 
   // タイルの描画
@@ -285,7 +387,7 @@ const App = {
 
     const list = Storage.load();
     list.forEach((sc, idx) => {
-      const tile = UI.createTile(
+      const tile = Tile.create(
         sc,
         idx,
         () => this.render(),

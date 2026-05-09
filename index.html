@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ja">
+<html lang="ja" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -75,10 +75,26 @@
       </nav>
     </main>
 
-    <!-- モーダル・ダイアログ -->
-    <dialog id="modal-overlay">
+    <!-- 設定ボタン -->
+    <button id="settings-btn" aria-label="設定">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+      >
+        <circle cx="12" cy="12" r="3" />
+        <path
+          d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
+        />
+      </svg>
+    </button>
+
+    <!-- ショートカット追加モーダル -->
+    <dialog id="shortcut-modal">
       <div id="modal">
-        <h2 id="modal-title">ショートカットを追加</h2>
+        <h2>ショートカットを追加</h2>
 
         <div class="field">
           <label for="modal-url">URL</label>
@@ -92,9 +108,9 @@
 
         <div class="field">
           <label>ファビコン</label>
-          <div id="favicon-row">
+          <div id="favicon-upload-row">
             <div id="favicon-preview-container">
-              <div id="favicon-preview-content"></div>
+              <div id="favicon-preview"></div>
             </div>
             <div id="favicon-upload-wrap">
               <label id="favicon-upload-label" for="favicon-file-input">
@@ -123,7 +139,6 @@
         </div>
 
         <div id="modal-actions">
-          <!-- type="button" → submit イベントを発生させない -->
           <button id="modal-cancel" class="btn btn-ghost" type="button">
             キャンセル
           </button>
@@ -134,6 +149,117 @@
       </div>
     </dialog>
 
+    <!-- 設定モーダル -->
+    <dialog id="settings-modal">
+      <div id="modal">
+        <h2>設定</h2>
+
+        <!-- テーマ切り替え -->
+        <div class="field">
+          <label>カラーモード</label>
+          <div id="theme-switcher">
+            <button class="theme-option" data-theme-value="dark" type="button">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              >
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+              </svg>
+              ダーク
+            </button>
+            <button class="theme-option" data-theme-value="light" type="button">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              >
+                <circle cx="12" cy="12" r="5" />
+                <line x1="12" y1="1" x2="12" y2="3" />
+                <line x1="12" y1="21" x2="12" y2="23" />
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                <line x1="1" y1="12" x2="3" y2="12" />
+                <line x1="21" y1="12" x2="23" y2="12" />
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+              </svg>
+              ライト
+            </button>
+            <button
+              class="theme-option"
+              data-theme-value="system"
+              type="button"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              >
+                <rect x="2" y="3" width="20" height="14" rx="2" />
+                <line x1="8" y1="21" x2="16" y2="21" />
+                <line x1="12" y1="17" x2="12" y2="21" />
+              </svg>
+              システム
+            </button>
+          </div>
+        </div>
+
+        <!-- 背景カスタマイズ -->
+        <div class="field">
+          <label>背景のカスタマイズ</label>
+          <div id="bg-upload-row">
+            <label id="bg-upload-label" for="bg-file-input">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              >
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="17 8 12 3 7 8" />
+                <line x1="12" y1="3" x2="12" y2="15" />
+              </svg>
+              ファイルをアップロード (.svg)
+            </label>
+            <input
+              id="bg-file-input"
+              type="file"
+              accept=".svg,.SVG"
+              style="display: none"
+            />
+          </div>
+          <p id="favicon-hint">アップロードすると即座に適用されます</p>
+        </div>
+
+        <div id="modal-actions">
+          <button
+            id="bg-reset"
+            class="btn btn-ghost"
+            type="button"
+            style="color: var(--danger)"
+          >
+            背景をリセット
+          </button>
+          <button
+            id="settings-modal-close"
+            class="btn btn-primary"
+            type="button"
+          >
+            閉じる
+          </button>
+        </div>
+      </div>
+    </dialog>
+
+    <style id="user-custom-bg"></style>
     <script src="script.js"></script>
   </body>
 </html>
