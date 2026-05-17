@@ -1,0 +1,11 @@
+<svg width="800" height="450" viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="450" fill="#FFF8F2"/>
+
+  <path d="M0,450 L0,300 C150,250 300,400 500,350 C650,310 800,340 800,340 L800,450 Z" fill="#FFB366"/>
+
+  <path d="M0,450 C100,250 400,100 800,50 L800,450 L0,450 Z" fill="#FFCC99" fill-opacity="0.6"/>
+
+  <path d="M0,450 L0,380 C200,360 400,430 600,400 C700,385 800,410 800,410 L800,450 Z" fill="#FF9933"/>
+
+  <path d="M0,450 C100,250 400,100 800,50" stroke="#FFD9A8" stroke-width="1" fill="none" opacity="0.5"/>
+</svg>

@@ -6,41 +6,48 @@
   padding: 0;
 }
 
-/* ── Dark theme (default) ── */
+/* ─────────────────────────────────────────
+   ── Dark theme (default)
+───────────────────────────────────────── */
 :root,
 [data-theme="dark"] {
-  --bg: #0f1117;
-  --surface: rgba(255, 255, 255, 0.05);
-  --surface-h: rgba(255, 255, 255, 0.1);
-  --border: rgba(255, 255, 255, 0.09);
+  --bg: #1a1b26; /* theme-D.svg の背景色に合わせた */
+  --surface: rgba(255, 255, 255, 0.07);
+  --surface-h: rgba(255, 255, 255, 0.13);
+  --border: rgba(255, 255, 255, 0.11);
   --text: #e8eaf0;
-  --muted: rgba(232, 234, 240, 0.45);
+  --muted: rgba(232, 234, 240, 0.55);
   --accent: #5b8dee;
   --accent-glow: rgba(91, 141, 238, 0.35);
   --danger: #e05c6b;
   --radius: 14px;
   --modal-bg: #1a1d27;
   --modal-shadow: rgba(0, 0, 0, 0.6);
-  --settings-btn-bg: rgba(255, 255, 255, 0.05);
+  --settings-btn-bg: rgba(255, 255, 255, 0.07);
 }
 
-/* ── Light theme ── */
+/* ─────────────────────────────────────────
+   ── Light theme
+───────────────────────────────────────── */
 [data-theme="light"] {
-  --bg: #f0f2f8;
-  --surface: rgba(0, 0, 0, 0.04);
-  --surface-h: rgba(0, 0, 0, 0.08);
-  --border: rgba(0, 0, 0, 0.1);
-  --text: #1a1d27;
-  --muted: rgba(26, 29, 39, 0.5);
+  --bg: #fff8f2; /* theme-L.svg の背景色に合わせた */
+  --surface: rgba(255, 255, 255, 0.55);
+  --surface-h: rgba(255, 255, 255, 0.8);
+  --border: rgba(80, 40, 0, 0.14);
+  --text: #1a1208;
+  --muted: rgba(26, 18, 8, 0.6);
   --accent: #3b6fd4;
   --accent-glow: rgba(59, 111, 212, 0.25);
   --danger: #d0455a;
   --radius: 14px;
   --modal-bg: #ffffff;
   --modal-shadow: rgba(0, 0, 0, 0.18);
-  --settings-btn-bg: rgba(255, 255, 255, 0.7);
+  --settings-btn-bg: rgba(255, 255, 255, 0.65);
 }
 
+/* ─────────────────────────────────────────
+   ── Base
+───────────────────────────────────────── */
 html,
 body {
   height: 100%;
@@ -54,68 +61,28 @@ body {
     color 0.3s ease;
 }
 
-/* ── Background default (dark) ── */
-[data-theme="dark"] body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background:
-    radial-gradient(
-      circle at 20% 30%,
-      rgba(91, 141, 238, 0.15) 0%,
-      transparent 50%
-    ),
-    radial-gradient(
-      circle at 80% 70%,
-      rgba(130, 80, 200, 0.12) 0%,
-      transparent 50%
-    ),
-    linear-gradient(135deg, #0a0c12 0%, #161922 100%);
-  z-index: 0;
-  transition: opacity 0.3s ease;
-}
-
-[data-theme="dark"] body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 1000 1000' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,1000 C300,800 400,200 1000,0 L1000,1000 Z' fill='rgba(255,255,255,0.02)'/%3E%3C/svg%3E");
+/* ─────────────────────────────────────────
+   ── Background: theme-D.svg / theme-L.svg
+───────────────────────────────────────── */
+[data-theme="dark"] body {
+  background-image: url("theme-D.svg");
   background-size: cover;
-  pointer-events: none;
-  z-index: 0;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
-/* ── Background default (light) ── */
-[data-theme="light"] body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background:
-    radial-gradient(
-      circle at 20% 30%,
-      rgba(59, 111, 212, 0.08) 0%,
-      transparent 50%
-    ),
-    radial-gradient(
-      circle at 80% 70%,
-      rgba(130, 80, 200, 0.06) 0%,
-      transparent 50%
-    ),
-    linear-gradient(135deg, #e8ecf5 0%, #f5f6fa 100%);
-  z-index: 0;
-}
-
-[data-theme="light"] body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 1000 1000' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,1000 C300,800 400,200 1000,0 L1000,1000 Z' fill='rgba(0,0,0,0.015)'/%3E%3C/svg%3E");
+[data-theme="light"] body {
+  background-image: url("theme-L.svg");
   background-size: cover;
-  pointer-events: none;
-  z-index: 0;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
-/* ── Layout ── */
+/* ─────────────────────────────────────────
+   ── Layout
+───────────────────────────────────────── */
 #app {
   display: flex;
   flex-direction: column;
@@ -127,7 +94,9 @@ body {
   z-index: 1;
 }
 
-/* ── Clock ── */
+/* ─────────────────────────────────────────
+   ── Clock
+───────────────────────────────────────── */
 #clock {
   font-family: "Space Mono", monospace;
   font-size: clamp(64px, 10vw, 110px);
@@ -140,7 +109,13 @@ body {
   text-shadow: 0 0 60px rgba(91, 141, 238, 0.25);
 }
 
-/* ── Search ── */
+[data-theme="light"] #clock {
+  text-shadow: 0 2px 24px rgba(200, 100, 0, 0.18);
+}
+
+/* ─────────────────────────────────────────
+   ── Search
+───────────────────────────────────────── */
 #search-wrap {
   position: relative;
   width: 100%;
@@ -220,7 +195,9 @@ body {
   appearance: none;
 }
 
-/* ── Shortcuts ── */
+/* ─────────────────────────────────────────
+   ── Shortcuts grid
+───────────────────────────────────────── */
 #shortcuts {
   width: 100%;
   max-width: 780px;
@@ -229,38 +206,44 @@ body {
   gap: 14px;
 }
 
-/* ── Tile ── */
+/* ─────────────────────────────────────────
+   ── Tile
+───────────────────────────────────────── */
 .tile {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  padding: 20px 10px 16px;
+  gap: 12px;
+  padding: 16px 12px 14px;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   cursor: grab;
   text-decoration: none;
   color: var(--text);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   transition:
     background 0.18s,
     border-color 0.18s,
     transform 0.18s,
     box-shadow 0.18s,
     opacity 0.18s;
-  min-height: 100px;
+  min-height: 130px;
   user-select: none;
 }
 
 .tile:hover {
   background: var(--surface-h);
-  border-color: rgba(128, 128, 128, 0.25);
+  border-color: rgba(128, 128, 128, 0.3);
   transform: translateY(-3px);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="light"] .tile:hover {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
 .tile.dragging {
@@ -277,29 +260,29 @@ body {
 }
 
 .tile img {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
   object-fit: contain;
   flex-shrink: 0;
 }
 
 .tile-fallback {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
   background: var(--surface-h);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 15px;
+  font-size: 22px;
   font-weight: 700;
   color: var(--accent);
   flex-shrink: 0;
 }
 
 .tile-name {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
   color: var(--muted);
   text-align: center;
@@ -315,7 +298,18 @@ body {
   color: var(--text);
 }
 
-/* ── Delete button ── */
+[data-theme="light"] .tile-name {
+  color: var(--text); /* ライトテーマでは常に濃い色 */
+  opacity: 0.75;
+}
+
+[data-theme="light"] .tile:hover .tile-name {
+  opacity: 1;
+}
+
+/* ─────────────────────────────────────────
+   ── Delete button
+───────────────────────────────────────── */
 .tile-del {
   position: absolute;
   top: 7px;
@@ -348,14 +342,16 @@ body {
   color: #fff !important;
 }
 
-/* ── Add button ── */
+/* ─────────────────────────────────────────
+   ── Add button
+───────────────────────────────────────── */
 #add-btn {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  padding: 20px 10px 16px;
+  gap: 12px;
+  padding: 16px 12px 14px;
   background: transparent;
   border: 1.5px dashed var(--border);
   border-radius: var(--radius);
@@ -364,7 +360,7 @@ body {
   font-family: "DM Sans", sans-serif;
   font-size: 12px;
   font-weight: 500;
-  min-height: 100px;
+  min-height: 130px;
   transition:
     border-color 0.18s,
     color 0.18s,
@@ -387,7 +383,9 @@ body {
   opacity: 1;
 }
 
-/* ── Settings Button ── */
+/* ─────────────────────────────────────────
+   ── Settings Button（鉛筆アイコン）
+───────────────────────────────────────── */
 #settings-btn {
   position: fixed;
   bottom: 24px;
@@ -410,16 +408,18 @@ body {
 #settings-btn:hover {
   background: var(--surface-h);
   color: var(--text);
-  transform: rotate(30deg);
+  transform: rotate(15deg) scale(1.08);
   border-color: var(--accent);
 }
 
 #settings-btn svg {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
 }
 
-/* ── Modal ── */
+/* ─────────────────────────────────────────
+   ── Modal
+───────────────────────────────────────── */
 dialog#shortcut-modal,
 dialog#settings-modal {
   border: none;
@@ -431,9 +431,14 @@ dialog#settings-modal {
 
 dialog#shortcut-modal::backdrop,
 dialog#settings-modal::backdrop {
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.45);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
+}
+
+[data-theme="light"] dialog#shortcut-modal::backdrop,
+[data-theme="light"] dialog#settings-modal::backdrop {
+  background: rgba(80, 40, 0, 0.25);
 }
 
 #modal {
@@ -478,11 +483,16 @@ dialog#settings-modal[open] {
 .field label {
   display: block;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--muted);
   margin-bottom: 7px;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
+}
+
+[data-theme="light"] .field label {
+  color: var(--text);
+  opacity: 0.65;
 }
 
 .field input[type="text"],
@@ -507,7 +517,9 @@ dialog#settings-modal[open] {
   box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
-/* ── Theme Switcher ── */
+/* ─────────────────────────────────────────
+   ── Theme Switcher
+───────────────────────────────────────── */
 #theme-switcher {
   display: flex;
   gap: 8px;
@@ -554,7 +566,18 @@ dialog#settings-modal[open] {
   box-shadow: 0 0 0 2px var(--accent-glow);
 }
 
-/* ── Background upload row ── */
+[data-theme="light"] .theme-option {
+  color: var(--text);
+  opacity: 0.75;
+}
+
+[data-theme="light"] .theme-option.active {
+  opacity: 1;
+}
+
+/* ─────────────────────────────────────────
+   ── Background upload row
+───────────────────────────────────────── */
 #bg-upload-row {
   display: flex;
   align-items: center;
@@ -578,6 +601,10 @@ dialog#settings-modal[open] {
     border-color 0.15s,
     color 0.15s,
     background 0.15s;
+}
+
+[data-theme="light"] #bg-upload-label {
+  color: var(--text);
 }
 
 #bg-upload-label:hover {
@@ -645,6 +672,10 @@ dialog#settings-modal[open] {
     background 0.15s;
 }
 
+[data-theme="light"] #favicon-upload-label {
+  color: var(--text);
+}
+
 #favicon-upload-label:hover {
   border-color: var(--accent);
   color: var(--accent);
@@ -664,7 +695,13 @@ dialog#settings-modal[open] {
   line-height: 1.5;
 }
 
-/* モーダル下部ボタン */
+[data-theme="light"] #favicon-hint {
+  opacity: 0.8;
+}
+
+/* ─────────────────────────────────────────
+   ── Modal actions
+───────────────────────────────────────── */
 #modal-actions {
   display: flex;
   gap: 10px;
@@ -693,6 +730,12 @@ dialog#settings-modal[open] {
   background: var(--surface);
   color: var(--muted);
 }
+
+[data-theme="light"] .btn-ghost {
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
 .btn-ghost:hover {
   background: var(--surface-h);
   color: var(--text);
@@ -706,7 +749,9 @@ dialog#settings-modal[open] {
   filter: brightness(1.1);
 }
 
-/* ── Scrollbar ── */
+/* ─────────────────────────────────────────
+   ── Scrollbar
+───────────────────────────────────────── */
 ::-webkit-scrollbar {
   width: 6px;
 }

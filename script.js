@@ -244,8 +244,8 @@ const SettingsController = {
     // 保存済み背景CSSを適用
     this._applyBg(localStorage.getItem(CUSTOM_CSS_KEY));
 
-    // 保存済みカラーモードを適用
-    this._applyColorMode(localStorage.getItem(COLOR_MODE_KEY) || "dark");
+    // 保存済みカラーモードを適用（デフォルトは "system"）
+    this._applyColorMode(localStorage.getItem(COLOR_MODE_KEY) || "system");
 
     // 背景ファイルアップロード
     this.bgFileInput.addEventListener("change", (e) => this._handleBgUpload(e));
@@ -276,7 +276,7 @@ const SettingsController = {
     window
       .matchMedia("(prefers-color-scheme: dark)")
       .addEventListener("change", () => {
-        const saved = localStorage.getItem(COLOR_MODE_KEY) || "dark";
+        const saved = localStorage.getItem(COLOR_MODE_KEY) || "system";
         if (saved === "system") this._applyColorMode("system");
       });
   },
@@ -288,7 +288,7 @@ const SettingsController = {
     const reader = new FileReader();
     reader.onload = (ev) => {
       const svgDataUrl = `url("data:image/svg+xml,${encodeURIComponent(ev.target.result)}")`;
-      const cssRule = `body::before, body::after { display: none !important; } body { background-image: ${svgDataUrl} !important; background-size: cover; background-position: center; }`;
+      const cssRule = `body { background-image: ${svgDataUrl} !important; background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: fixed; }`;
       this._saveBg(cssRule);
     };
     reader.readAsText(file);
